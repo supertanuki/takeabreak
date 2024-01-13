@@ -15,17 +15,23 @@ var vertices = [],
 
 var container = document.getElementById("container");
 
-var clickPosition = [imageWidth * 0.5, imageHeight * 0.5];
+var clickPosition = [];
+
+const glassSounds = [
+    'sound/41348__datasoundsample__glass-shatter.wav',
+    'sound/203375__c_rogers__glass-shattering_01.ogg',
+    'sound/321139__jsbarrett__breaking-glass.wav',
+  ];
 
 window.onload = function () {
   TweenMax.set(container, { perspective: 500 });
 
   // images from reddit/r/wallpapers
   var urls = [
+      "img/the-Frugal-Architect.png",
+      "img/macron.png",
       "img/The-Techno-Optimist-Manifesto-Andreessen-Horowitz.png",
-      "https://s3-us-west-2.amazonaws.com/s.cdpn.io/175711/crayon.jpg",
-      "https://s3-us-west-2.amazonaws.com/s.cdpn.io/175711/dj.jpg",
-      "https://s3-us-west-2.amazonaws.com/s.cdpn.io/175711/chicken.jpg",
+      "img/trump.png",
     ],
     image,
     loaded = 0;
@@ -80,7 +86,8 @@ function triangulate() {
       { r: 50, c: 12 },
       { r: 150, c: 12 },
       { r: 300, c: 12 },
-      { r: 1200, c: 12 }, // very large in case of corner clicks
+      { r: 1200, c: 12 },
+      { r: 2000, c: 12 }, // very large in case of corner clicks
     ],
     x,
     y,
@@ -116,11 +123,15 @@ function triangulate() {
 }
 
 function shatter() {
+  const sound = new Audio(glassSounds[Math.round(randomRange(0,2))]);
+  sound.addEventListener("canplaythrough", (event) => {
+    sound.play();
+  });
+
+
   var p0, p1, p2, fragment;
 
   var tl0 = new TimelineMax({ onComplete: shatterCompleteHandler });
-
-  console.log("shatter");
 
   for (var i = 0; i < indices.length; i += 3) {
     p0 = vertices[indices[i + 0]];

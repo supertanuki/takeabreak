@@ -1,46 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Screen Explosion</title>
     <style>
-body {
-    background-color: #000;
-    margin: 0;
-    overflow: hidden;
-}
+      body {
+        background-color: #000;
+        margin: 0;
+        overflow: hidden;
+      }
 
-canvas {
-    position: absolute;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    -moz-backface-visibility: hidden;
-    -ms-backface-visibility: hidden;
-}
+      canvas {
+        position: absolute;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        -moz-backface-visibility: hidden;
+        -ms-backface-visibility: hidden;
+      }
 
-img {
-    position: absolute;
-    cursor: pointer;
-}
+      img {
+        position: absolute;
+        cursor: pointer;
+      }
 
-#container {
-    position: absolute;
-    width: 768px;
-    height: 485px;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-}
+      #container {
+        position: absolute;
+        width: 1500px;
+        height: 900px;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="container"></div>
-    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/175711/delaunay.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.13.2/TweenMax.min.js"></script>
-
+    <script src="js/delaunay.js"></script>
+    <script src="js/TweenMax.min.js"></script>
     <script src="main.js"></script>
-</body>
+  </body>
 </html>
