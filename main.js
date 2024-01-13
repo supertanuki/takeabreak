@@ -1,3 +1,6 @@
+// Inspired by:
+// Shattering Images
+// Szenia Zadvornykh https://codepen.io/zadvorsky/pen/abaeOK
 // triangulation using https://github.com/ironwallaby/delaunay
 
 const TWO_PI = Math.PI * 2;
@@ -18,16 +21,34 @@ var container = document.getElementById("container");
 var clickPosition = [];
 
 const glassSounds = [
-    'sound/41348__datasoundsample__glass-shatter.wav',
-    'sound/203375__c_rogers__glass-shattering_01.ogg',
-    'sound/321139__jsbarrett__breaking-glass.wav',
-  ];
+  "sound/41348__datasoundsample__glass-shatter.wav",
+  "sound/203375__c_rogers__glass-shattering_01.ogg",
+  "sound/321139__jsbarrett__breaking-glass.wav",
+];
+
+// Bat
+const bat = new Image();
+bat.src = "img/bat.svg";
+bat.style.zIndex = 10000;
+bat.width = 400;
+bat.style.position = "absolute";
+bat.style.display = "none";
+container.appendChild(bat);
+
+let isShattering = false;
+
+onmousemove = (event) => {
+  bat.style.left = event.pageX - 240 + "px";
+  bat.style.top = event.pageY - 420 + "px";
+  bat.style.display = "block";
+};
 
 window.onload = function () {
   TweenMax.set(container, { perspective: 500 });
 
   // images from reddit/r/wallpapers
   var urls = [
+      "img/x-musk.png",
       "img/the-Frugal-Architect.png",
       "img/macron.png",
       "img/The-Techno-Optimist-Manifesto-Andreessen-Horowitz.png",
@@ -57,11 +78,12 @@ function imagesLoaded() {
 }
 
 function placeImage(transitionIn) {
+  isShattering = false;
   image = images[imageIndex];
 
   if (++imageIndex === images.length) imageIndex = 0;
 
-  image.addEventListener("click", imageClickHandler);
+  document.body.addEventListener("click", imageClickHandler);
   container.appendChild(image);
 
   if (transitionIn !== false) {
@@ -70,15 +92,38 @@ function placeImage(transitionIn) {
 }
 
 function imageClickHandler(event) {
+  if (isShattering) {
+    return false;
+  }
+
+  isShattering = true;
+
   var box = image.getBoundingClientRect(),
     top = box.top,
     left = box.left;
 
-  clickPosition[0] = event.clientX - left;
-  clickPosition[1] = event.clientY - top;
+  clickPosition[0] = event.clientX - left - 100;
+  clickPosition[1] = event.clientY - top - 200;
 
-  triangulate();
-  shatter();
+  TweenMax.fromTo(
+    bat,
+    0.2,
+    { rotation: 0 },
+    {
+      rotation: -100,
+      ease: Back.easeOut,
+      onComplete: function () {
+        triangulate();
+        shatter();
+        TweenMax.fromTo(
+          bat,
+          1,
+          { rotation: -100 },
+          { rotation: 0, ease: Back.easeOut }
+        );
+      },
+    }
+  );
 }
 
 function triangulate() {
@@ -123,11 +168,10 @@ function triangulate() {
 }
 
 function shatter() {
-  const sound = new Audio(glassSounds[Math.round(randomRange(0,2))]);
+  const sound = new Audio(glassSounds[Math.round(randomRange(0, 2))]);
   sound.addEventListener("canplaythrough", (event) => {
     sound.play();
   });
-
 
   var p0, p1, p2, fragment;
 
@@ -166,7 +210,6 @@ function shatter() {
   }
 
   container.removeChild(image);
-  image.removeEventListener("click", imageClickHandler);
 }
 
 function shatterCompleteHandler() {
