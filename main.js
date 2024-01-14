@@ -37,17 +37,19 @@ container.appendChild(bat);
 
 let isShattering = false;
 
-onmousemove = (event) => {
-  bat.style.left = event.pageX - 240 + "px";
-  bat.style.top = event.pageY - 420 + "px";
-  bat.style.display = "block";
-};
+const infoContainer = document.getElementById("info");
+const startButton = document.getElementById("start");
 
 window.onload = function () {
   TweenMax.set(container, { perspective: 500 });
 
+  TweenMax.fromTo(infoContainer, 1, { alpha:0, rotation: 45, y: -1000 }, { alpha:1, rotation: 0, y: 0, ease: Back.easeOut });
+  infoContainer.style.display = 'inline-block';
+  startButton.onclick = start;
+
   // images from reddit/r/wallpapers
   var urls = [
+      "img/zuck.webp",
       "img/x-musk.png",
       "img/the-Frugal-Architect.png",
       "img/macron.png",
@@ -56,12 +58,13 @@ window.onload = function () {
     ],
     image,
     loaded = 0;
+
   // very quick and dirty hack to load and display the first image asap
   images[0] = image = new Image();
   image.onload = function () {
     if (++loaded === 1) {
-      imagesLoaded();
-      for (var i = 1; i < 4; i++) {
+      //placeImage();
+      for (var i = 1; i < urls.length; i++) {
         images[i] = image = new Image();
 
         image.src = urls[i];
@@ -71,24 +74,30 @@ window.onload = function () {
   image.src = urls[0];
 };
 
-function imagesLoaded() {
-  placeImage(false);
-  //triangulate();
-  //shatter();
+function start() {
+  TweenMax.fromTo(infoContainer, 0.5, { rotation: 0, y: 0 }, { rotation: -45, y: 600, alpha:0, ease: Back.easeIn, onComplete: function() {
+    infoContainer.remove();
+
+    placeImage();
+
+    onmousemove = (event) => {
+      bat.style.display = "block";
+      bat.style.left = event.pageX - 240 + "px";
+      bat.style.top = event.pageY - 420 + "px";
+    };
+  }});
 }
 
-function placeImage(transitionIn) {
+function placeImage() {
   isShattering = false;
+  imageIndex++;
+
+  if (imageIndex === images.length) imageIndex = 0;
+
   image = images[imageIndex];
-
-  if (++imageIndex === images.length) imageIndex = 0;
-
   document.body.addEventListener("click", imageClickHandler);
   container.appendChild(image);
-
-  if (transitionIn !== false) {
-    TweenMax.fromTo(image, 0.75, { y: -1000 }, { y: 0, ease: Back.easeOut });
-  }
+  TweenMax.fromTo(image, 0.75, { y: -1000 }, { y: 0, ease: Back.easeOut });
 }
 
 function imageClickHandler(event) {
